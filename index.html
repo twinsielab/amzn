@@ -6,48 +6,66 @@
     <title>URL Shortener</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-align: center;
-            background-color: #f4f4f4;
+            background-color: #f0f0f0;
             margin: 0;
             padding: 20px;
-        }
-        h1 {
             color: #333;
         }
-        #urlInput {
+        h1 {
+            color: #007bff;
+        }
+        form {
+            margin: 20px auto;
             width: 70%;
+        }
+        input[type="text"] {
+            width: 100%;
             padding: 10px;
-            margin-top: 20px;
             margin-bottom: 10px;
-            border: 1px solid #ddd;
+            border: 1px solid #ccc;
             border-radius: 4px;
         }
         button {
             padding: 10px 20px;
-            background-color: #007bff;
+            margin-right: 5px;
+            background-color: #28a745;
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
         }
         button:hover {
-            background-color: #0056b3;
+            background-color: #218838;
+        }
+        .clear-button {
+            background-color: #dc3545;
+        }
+        .clear-button:hover {
+            background-color: #c82333;
         }
         #result {
             margin-top: 20px;
-            color: green;
+            color: #28a745;
         }
-
         a {
-            font-size: 24pt;
+            font-size: 18pt;
+            text-decoration: none;
+            color: #007bff;
+        }
+        a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
     <h1>URL Shortener</h1>
-    <input type="text" id="urlInput" placeholder="Enter URL here">
-    <button onclick="shortenURL()">Shorten URL</button>
+    <form id="urlForm">
+        <input type="text" id="urlInput" placeholder="Enter URL here">
+        <button type="submit">Shorten URL</button>
+        <button type="button" class="clear-button" onclick="clearInput()">Clear</button>
+    </form>
     <p id="result"></p>
 
     <script>
@@ -58,6 +76,11 @@
                 document.getElementById('urlInput').value = url;
                 shortenURL();
             }
+        });
+
+        document.getElementById('urlForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            shortenURL();
         });
 
         function shortenURL() {
@@ -71,6 +94,11 @@
                     console.error('Error:', error);
                     document.getElementById('result').innerText = 'Error shortening URL';
                 });
+        }
+
+        function clearInput() {
+            document.getElementById('urlInput').value = '';
+            document.getElementById('result').innerText = '';
         }
     </script>
 </body>
