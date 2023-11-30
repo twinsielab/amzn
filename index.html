@@ -68,38 +68,55 @@
     </form>
     <p id="result"></p>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const url = urlParams.get('url');
-            if (url) {
-                document.getElementById('urlInput').value = url;
-                shortenURL();
-            }
-        });
+<script>
+    const AFFILIATE_TAG = 'tinymod-21'; // Replace with your actual affiliate tag
 
-        document.getElementById('urlForm').addEventListener('submit', function(event) {
-            event.preventDefault();
+    document.addEventListener("DOMContentLoaded", function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const url = urlParams.get('url');
+        if (url) {
+            document.getElementById('urlInput').value = url;
             shortenURL();
-        });
-
-        function shortenURL() {
-            const url = document.getElementById('urlInput').value;
-            fetch(`https://url-shortner-worker.jvtwinsies.workers.dev/?${url}`)
-                .then(response => response.text())
-                .then(shortUrl => {
-                    document.getElementById('result').innerHTML = `<a href="${shortUrl}" target="_blank">${shortUrl}</a>`;
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    document.getElementById('result').innerText = 'Error shortening URL';
-                });
         }
+    });
 
-        function clearInput() {
-            document.getElementById('urlInput').value = '';
-            document.getElementById('result').innerText = '';
+    document.getElementById('urlForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        shortenURL();
+    });
+
+    function shortenURL() {
+        const url = document.getElementById('urlInput').value;
+        fetch(`https://url-shortner-worker.jvtwinsies.workers.dev/?${url}`)
+            .then(response => response.text())
+            .then(shortUrl => {
+                document.getElementById('result').innerHTML = `<a href="${shortUrl}" target="_blank">${shortUrl}</a>`;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Fallback: convert URL locally if API call fails
+                try {
+                    const newUrl = convertUrlLocally(url);
+                    document.getElementById('result').innerHTML = `<a href="${newUrl}" target="_blank">${newUrl}</a>`;
+                } catch (err) {
+                    console.error('Error in local conversion:', err);
+                    document.getElementById('result').innerText = 'Error in URL conversion';
+                }
+            });
+    }
+
+    function convertUrlLocally(longUrl) {
+        let parsedUrl = new URL(longUrl);
+        if (parsedUrl.host.match(/amazon|amzn/)){
+            parsedUrl.searchParams.set('tag', AFFILIATE_TAG);
         }
-    </script>
+        return parsedUrl.toString();
+    }
+
+    function clearInput() {
+        document.getElementById('urlInput').value = '';
+        document.getElementById('result').innerText = '';
+    }
+</script>
 </body>
 </html>
